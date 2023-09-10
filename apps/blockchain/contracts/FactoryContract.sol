@@ -3,17 +3,20 @@ pragma solidity ^0.8.17;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "./StorageContract.sol";
 
-contract FactoryContract is ERC721, ERC721URIStorage, Ownable {
+contract FactoryContract is ERC721, ERC721URIStorage, AccessControl, Ownable {
     using Counters for Counters.Counter;
 
     Counters.Counter private _projectIdCounter;
     address implementation;
     address[] public projects;
+
+    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
     constructor() ERC721("SynthWork", "SNWK") {
         implementation = address(new StorageContract());
@@ -40,7 +43,7 @@ contract FactoryContract is ERC721, ERC721URIStorage, Ownable {
         _projectIdCounter.increment();
     }
 
-    function safeMint(uint256 tokenId, address to, string memory uri) public onlyOwner {
+    function safeMint(uint256 tokenId, address to, string memory uri) public onlyRole(MINTER_ROLE) {
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
     }
@@ -61,7 +64,7 @@ contract FactoryContract is ERC721, ERC721URIStorage, Ownable {
     function supportsInterface(bytes4 interfaceId)
         public
         view
-        override(ERC721, ERC721URIStorage)
+        override(ERC721, ERC721URIStorage, AccessControl)
         returns (bool)
     {
         return super.supportsInterface(interfaceId);

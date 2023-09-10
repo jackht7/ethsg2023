@@ -15,8 +15,23 @@ contract StorageContract is Initializable, Ownable {
         string ipfsHash;
     }
 
+    struct Request {
+      uint256 txId;
+      bool approved;
+      ProjectStatus status;
+      uint256 amount;
+      string ipfsHash;
+    }
+
+    enum ProjectStatus {
+        Pending,
+        Approved,
+        Rejected
+    }
+
     address factoryAddress;
     Project project;
+    ProjectStatus status = ProjectStatus.Pending;
 
     constructor() {
       _disableInitializers();
@@ -36,5 +51,25 @@ contract StorageContract is Initializable, Ownable {
     {
         project = Project(_projectId, _amount, _juniorAddress, _seniorAddress, _clientAddress, _ipfsHash);
         factoryAddress = _factoryAddress;
+    }
+
+    function approveRequest() external {
+        require(msg.sender == project.clientAddress , "Only client can approve request");
+    }
+
+    function rejectRequest() external {
+        require(msg.sender == project.clientAddress , "Only client can reject request");
+    }
+
+    function _mintNFT() internal {
+        bytes memory payload = abi.encodeWithSignature("safeMint(uint256,address,string)", project.projectId, address(this), project.ipfsHash);
+        (bool success, ) = address(factoryAddress).call(payload);
+        require(success, "minting failed");
+    }
+
+    function getRequests() external view returns (Request[] memory) {
+        Request[] memory requests = new Request[](1);
+        requests[0] = Request(project.projectId, true, status, project.amount, project.ipfsHash);
+        return requests;
     }
 }

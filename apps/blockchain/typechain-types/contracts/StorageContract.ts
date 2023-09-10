@@ -27,22 +27,60 @@ import type {
   PromiseOrValue,
 } from "../common";
 
+export declare namespace StorageContract {
+  export type RequestStruct = {
+    txId: PromiseOrValue<BigNumberish>;
+    approved: PromiseOrValue<boolean>;
+    status: PromiseOrValue<BigNumberish>;
+    amount: PromiseOrValue<BigNumberish>;
+    ipfsHash: PromiseOrValue<string>;
+  };
+
+  export type RequestStructOutput = [
+    BigNumber,
+    boolean,
+    number,
+    BigNumber,
+    string
+  ] & {
+    txId: BigNumber;
+    approved: boolean;
+    status: number;
+    amount: BigNumber;
+    ipfsHash: string;
+  };
+}
+
 export interface StorageContractInterface extends utils.Interface {
   functions: {
+    "approveRequest()": FunctionFragment;
+    "getRequests()": FunctionFragment;
     "initialize(uint256,uint256,address,address,address,address,string)": FunctionFragment;
     "owner()": FunctionFragment;
+    "rejectRequest()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
+      | "approveRequest"
+      | "getRequests"
       | "initialize"
       | "owner"
+      | "rejectRequest"
       | "renounceOwnership"
       | "transferOwnership"
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: "approveRequest",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getRequests",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "initialize",
     values: [
@@ -57,6 +95,10 @@ export interface StorageContractInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "rejectRequest",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
@@ -65,8 +107,20 @@ export interface StorageContractInterface extends utils.Interface {
     values: [PromiseOrValue<string>]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "approveRequest",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getRequests",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "rejectRequest",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
@@ -131,6 +185,14 @@ export interface StorageContract extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    approveRequest(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    getRequests(
+      overrides?: CallOverrides
+    ): Promise<[StorageContract.RequestStructOutput[]]>;
+
     initialize(
       _projectId: PromiseOrValue<BigNumberish>,
       _amount: PromiseOrValue<BigNumberish>,
@@ -144,6 +206,10 @@ export interface StorageContract extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
+    rejectRequest(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -153,6 +219,14 @@ export interface StorageContract extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
+
+  approveRequest(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  getRequests(
+    overrides?: CallOverrides
+  ): Promise<StorageContract.RequestStructOutput[]>;
 
   initialize(
     _projectId: PromiseOrValue<BigNumberish>,
@@ -167,6 +241,10 @@ export interface StorageContract extends BaseContract {
 
   owner(overrides?: CallOverrides): Promise<string>;
 
+  rejectRequest(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   renounceOwnership(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
@@ -177,6 +255,12 @@ export interface StorageContract extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    approveRequest(overrides?: CallOverrides): Promise<void>;
+
+    getRequests(
+      overrides?: CallOverrides
+    ): Promise<StorageContract.RequestStructOutput[]>;
+
     initialize(
       _projectId: PromiseOrValue<BigNumberish>,
       _amount: PromiseOrValue<BigNumberish>,
@@ -189,6 +273,8 @@ export interface StorageContract extends BaseContract {
     ): Promise<void>;
 
     owner(overrides?: CallOverrides): Promise<string>;
+
+    rejectRequest(overrides?: CallOverrides): Promise<void>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
@@ -213,6 +299,12 @@ export interface StorageContract extends BaseContract {
   };
 
   estimateGas: {
+    approveRequest(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    getRequests(overrides?: CallOverrides): Promise<BigNumber>;
+
     initialize(
       _projectId: PromiseOrValue<BigNumberish>,
       _amount: PromiseOrValue<BigNumberish>,
@@ -226,6 +318,10 @@ export interface StorageContract extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
+    rejectRequest(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -237,6 +333,12 @@ export interface StorageContract extends BaseContract {
   };
 
   populateTransaction: {
+    approveRequest(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    getRequests(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     initialize(
       _projectId: PromiseOrValue<BigNumberish>,
       _amount: PromiseOrValue<BigNumberish>,
@@ -249,6 +351,10 @@ export interface StorageContract extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    rejectRequest(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
