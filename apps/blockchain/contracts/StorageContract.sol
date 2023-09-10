@@ -3,6 +3,7 @@ pragma solidity ^0.8.17;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
 
 contract StorageContract is Initializable, Ownable {
 
@@ -16,11 +17,11 @@ contract StorageContract is Initializable, Ownable {
     }
 
     struct Request {
-      uint256 txId;
-      bool approved;
-      ProjectStatus status;
-      uint256 amount;
-      string ipfsHash;
+        uint256 txId;
+        bool approved;
+        ProjectStatus status;
+        uint256 amount;
+        string ipfsHash;
     }
 
     enum ProjectStatus {
@@ -32,6 +33,7 @@ contract StorageContract is Initializable, Ownable {
     address factoryAddress;
     Project project;
     ProjectStatus status = ProjectStatus.Pending;
+    mapping(address => bool) hasApproved;
 
     constructor() {
       _disableInitializers();
@@ -53,12 +55,22 @@ contract StorageContract is Initializable, Ownable {
         factoryAddress = _factoryAddress;
     }
 
-    function approveRequest() external {
-        require(msg.sender == project.clientAddress , "Only client can approve request");
+    function approveRequest(uint256 _projectId, bytes signature) external {
+        require(msg.sender == project.clientAddress 
+                || msg.sender == project.seniorAddress, 
+                "Unauthorized");
+        hasApproved[msg.sender] = true;
+        if (hasApproved[project.clientAddress] && hasApproved[project.seniorAddress]) {
+            status = ProjectStatus.Approved;
+            _mintNFT();
+        }
     }
 
-    function rejectRequest() external {
-        require(msg.sender == project.clientAddress , "Only client can reject request");
+    function rejectRequest(uint256 _projectId, bytes signature) external {
+        require(msg.sender == project.clientAddress 
+                || msg.sender == project.seniorAddress, 
+                "Unauthorized");
+        status = ProjectStatus.Rejected;
     }
 
     function _mintNFT() internal {
@@ -67,9 +79,9 @@ contract StorageContract is Initializable, Ownable {
         require(success, "minting failed");
     }
 
-    function getRequests() external view returns (Request[] memory) {
+    function getRequests(address) external view returns (Request[] memory) {
         Request[] memory requests = new Request[](1);
-        requests[0] = Request(project.projectId, true, status, project.amount, project.ipfsHash);
-        return requests;
+        requests[0] = Request(project.projectId, hasApproved[address], status, project.amount, project.ipfsHash);
+        return requests;  
     }
 }
