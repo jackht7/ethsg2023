@@ -35,9 +35,11 @@ export interface FactoryContractInterface extends utils.Interface {
     "balanceOf(address)": FunctionFragment;
     "createProject(uint256,address,address,string)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
+    "getProjectsOfUser(address)": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
+    "implementation()": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
@@ -65,9 +67,11 @@ export interface FactoryContractInterface extends utils.Interface {
       | "balanceOf"
       | "createProject"
       | "getApproved"
+      | "getProjectsOfUser"
       | "getRoleAdmin"
       | "grantRole"
       | "hasRole"
+      | "implementation"
       | "isApprovedForAll"
       | "name"
       | "owner"
@@ -117,6 +121,10 @@ export interface FactoryContractInterface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
+    functionFragment: "getProjectsOfUser",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getRoleAdmin",
     values: [PromiseOrValue<BytesLike>]
   ): string;
@@ -127,6 +135,10 @@ export interface FactoryContractInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "hasRole",
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "implementation",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
@@ -224,11 +236,19 @@ export interface FactoryContractInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getProjectsOfUser",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getRoleAdmin",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "implementation",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
@@ -459,6 +479,11 @@ export interface FactoryContract extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    getProjectsOfUser(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[string[]]>;
+
     getRoleAdmin(
       role: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -475,6 +500,8 @@ export interface FactoryContract extends BaseContract {
       account: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
+
+    implementation(overrides?: CallOverrides): Promise<[string]>;
 
     isApprovedForAll(
       owner: PromiseOrValue<string>,
@@ -593,6 +620,11 @@ export interface FactoryContract extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  getProjectsOfUser(
+    user: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<string[]>;
+
   getRoleAdmin(
     role: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
@@ -609,6 +641,8 @@ export interface FactoryContract extends BaseContract {
     account: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<boolean>;
+
+  implementation(overrides?: CallOverrides): Promise<string>;
 
   isApprovedForAll(
     owner: PromiseOrValue<string>,
@@ -727,6 +761,11 @@ export interface FactoryContract extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    getProjectsOfUser(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
+
     getRoleAdmin(
       role: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -743,6 +782,8 @@ export interface FactoryContract extends BaseContract {
       account: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    implementation(overrides?: CallOverrides): Promise<string>;
 
     isApprovedForAll(
       owner: PromiseOrValue<string>,
@@ -949,6 +990,11 @@ export interface FactoryContract extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getProjectsOfUser(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getRoleAdmin(
       role: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -965,6 +1011,8 @@ export interface FactoryContract extends BaseContract {
       account: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    implementation(overrides?: CallOverrides): Promise<BigNumber>;
 
     isApprovedForAll(
       owner: PromiseOrValue<string>,
@@ -1086,6 +1134,11 @@ export interface FactoryContract extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getProjectsOfUser(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getRoleAdmin(
       role: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -1102,6 +1155,8 @@ export interface FactoryContract extends BaseContract {
       account: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    implementation(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     isApprovedForAll(
       owner: PromiseOrValue<string>,

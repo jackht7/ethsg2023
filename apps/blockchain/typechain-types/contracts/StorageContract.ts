@@ -53,33 +53,43 @@ export declare namespace StorageContract {
 
 export interface StorageContractInterface extends utils.Interface {
   functions: {
-    "approveRequest()": FunctionFragment;
-    "getRequests()": FunctionFragment;
+    "approveRequest(uint256,bytes)": FunctionFragment;
+    "factoryAddress()": FunctionFragment;
+    "getRequests(address)": FunctionFragment;
     "initialize(uint256,uint256,address,address,address,address,string)": FunctionFragment;
     "owner()": FunctionFragment;
-    "rejectRequest()": FunctionFragment;
+    "project()": FunctionFragment;
+    "rejectRequest(uint256,bytes)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
+    "status()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
       | "approveRequest"
+      | "factoryAddress"
       | "getRequests"
       | "initialize"
       | "owner"
+      | "project"
       | "rejectRequest"
       | "renounceOwnership"
+      | "status"
       | "transferOwnership"
   ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: "approveRequest",
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BytesLike>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "factoryAddress",
     values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getRequests",
-    values?: undefined
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
@@ -94,14 +104,16 @@ export interface StorageContractInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(functionFragment: "project", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "rejectRequest",
-    values?: undefined
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "status", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [PromiseOrValue<string>]
@@ -112,11 +124,16 @@ export interface StorageContractInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "factoryAddress",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getRequests",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "project", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "rejectRequest",
     data: BytesLike
@@ -125,6 +142,7 @@ export interface StorageContractInterface extends utils.Interface {
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "status", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
@@ -186,10 +204,15 @@ export interface StorageContract extends BaseContract {
 
   functions: {
     approveRequest(
+      _projectId: PromiseOrValue<BigNumberish>,
+      signature: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    factoryAddress(overrides?: CallOverrides): Promise<[string]>;
+
     getRequests(
+      user: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[StorageContract.RequestStructOutput[]]>;
 
@@ -206,13 +229,30 @@ export interface StorageContract extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
+    project(
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber, string, string, string, string] & {
+        projectId: BigNumber;
+        amount: BigNumber;
+        juniorAddress: string;
+        seniorAddress: string;
+        clientAddress: string;
+        ipfsHash: string;
+      }
+    >;
+
     rejectRequest(
+      _projectId: PromiseOrValue<BigNumberish>,
+      signature: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    status(overrides?: CallOverrides): Promise<[number]>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -221,10 +261,15 @@ export interface StorageContract extends BaseContract {
   };
 
   approveRequest(
+    _projectId: PromiseOrValue<BigNumberish>,
+    signature: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  factoryAddress(overrides?: CallOverrides): Promise<string>;
+
   getRequests(
+    user: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<StorageContract.RequestStructOutput[]>;
 
@@ -241,7 +286,22 @@ export interface StorageContract extends BaseContract {
 
   owner(overrides?: CallOverrides): Promise<string>;
 
+  project(
+    overrides?: CallOverrides
+  ): Promise<
+    [BigNumber, BigNumber, string, string, string, string] & {
+      projectId: BigNumber;
+      amount: BigNumber;
+      juniorAddress: string;
+      seniorAddress: string;
+      clientAddress: string;
+      ipfsHash: string;
+    }
+  >;
+
   rejectRequest(
+    _projectId: PromiseOrValue<BigNumberish>,
+    signature: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -249,15 +309,24 @@ export interface StorageContract extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  status(overrides?: CallOverrides): Promise<number>;
+
   transferOwnership(
     newOwner: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    approveRequest(overrides?: CallOverrides): Promise<void>;
+    approveRequest(
+      _projectId: PromiseOrValue<BigNumberish>,
+      signature: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    factoryAddress(overrides?: CallOverrides): Promise<string>;
 
     getRequests(
+      user: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<StorageContract.RequestStructOutput[]>;
 
@@ -274,9 +343,28 @@ export interface StorageContract extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<string>;
 
-    rejectRequest(overrides?: CallOverrides): Promise<void>;
+    project(
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber, string, string, string, string] & {
+        projectId: BigNumber;
+        amount: BigNumber;
+        juniorAddress: string;
+        seniorAddress: string;
+        clientAddress: string;
+        ipfsHash: string;
+      }
+    >;
+
+    rejectRequest(
+      _projectId: PromiseOrValue<BigNumberish>,
+      signature: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
+
+    status(overrides?: CallOverrides): Promise<number>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -300,10 +388,17 @@ export interface StorageContract extends BaseContract {
 
   estimateGas: {
     approveRequest(
+      _projectId: PromiseOrValue<BigNumberish>,
+      signature: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    getRequests(overrides?: CallOverrides): Promise<BigNumber>;
+    factoryAddress(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getRequests(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     initialize(
       _projectId: PromiseOrValue<BigNumberish>,
@@ -318,13 +413,19 @@ export interface StorageContract extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
+    project(overrides?: CallOverrides): Promise<BigNumber>;
+
     rejectRequest(
+      _projectId: PromiseOrValue<BigNumberish>,
+      signature: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
+
+    status(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -334,10 +435,17 @@ export interface StorageContract extends BaseContract {
 
   populateTransaction: {
     approveRequest(
+      _projectId: PromiseOrValue<BigNumberish>,
+      signature: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    getRequests(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    factoryAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getRequests(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     initialize(
       _projectId: PromiseOrValue<BigNumberish>,
@@ -352,13 +460,19 @@ export interface StorageContract extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    project(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     rejectRequest(
+      _projectId: PromiseOrValue<BigNumberish>,
+      signature: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
+
+    status(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,

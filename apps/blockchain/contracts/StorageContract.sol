@@ -30,9 +30,9 @@ contract StorageContract is Initializable, Ownable {
         Rejected
     }
 
-    address factoryAddress;
-    Project project;
-    ProjectStatus status = ProjectStatus.Pending;
+    address public factoryAddress;
+    Project public project;
+    ProjectStatus public status = ProjectStatus.Pending;
     mapping(address => bool) hasApproved;
 
     constructor() {
@@ -55,7 +55,7 @@ contract StorageContract is Initializable, Ownable {
         factoryAddress = _factoryAddress;
     }
 
-    function approveRequest(uint256 _projectId, bytes signature) external {
+    function approveRequest(uint256 _projectId, bytes calldata signature) external {
         require(msg.sender == project.clientAddress 
                 || msg.sender == project.seniorAddress, 
                 "Unauthorized");
@@ -66,7 +66,7 @@ contract StorageContract is Initializable, Ownable {
         }
     }
 
-    function rejectRequest(uint256 _projectId, bytes signature) external {
+    function rejectRequest(uint256 _projectId, bytes calldata signature) external {
         require(msg.sender == project.clientAddress 
                 || msg.sender == project.seniorAddress, 
                 "Unauthorized");
@@ -79,9 +79,9 @@ contract StorageContract is Initializable, Ownable {
         require(success, "minting failed");
     }
 
-    function getRequests(address) external view returns (Request[] memory) {
+    function getRequests(address user) external view returns (Request[] memory) {
         Request[] memory requests = new Request[](1);
-        requests[0] = Request(project.projectId, hasApproved[address], status, project.amount, project.ipfsHash);
+        requests[0] = Request(project.projectId, hasApproved[user], status, project.amount, project.ipfsHash);
         return requests;  
     }
 }

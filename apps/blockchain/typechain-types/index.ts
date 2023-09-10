@@ -12,6 +12,8 @@ export type { IAccessControl } from "./@openzeppelin/contracts/access/IAccessCon
 export { IAccessControl__factory } from "./factories/@openzeppelin/contracts/access/IAccessControl__factory";
 export type { Ownable } from "./@openzeppelin/contracts/access/Ownable";
 export { Ownable__factory } from "./factories/@openzeppelin/contracts/access/Ownable__factory";
+export type { IERC1271 } from "./@openzeppelin/contracts/interfaces/IERC1271";
+export { IERC1271__factory } from "./factories/@openzeppelin/contracts/interfaces/IERC1271__factory";
 export type { IERC4906 } from "./@openzeppelin/contracts/interfaces/IERC4906";
 export { IERC4906__factory } from "./factories/@openzeppelin/contracts/interfaces/IERC4906__factory";
 export type { Initializable } from "./@openzeppelin/contracts/proxy/utils/Initializable";

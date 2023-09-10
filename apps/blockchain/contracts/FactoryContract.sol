@@ -13,13 +13,16 @@ contract FactoryContract is ERC721, ERC721URIStorage, AccessControl, Ownable {
     using Counters for Counters.Counter;
 
     Counters.Counter private _projectIdCounter;
-    address implementation;
+    address public immutable implementation;
     address[] public projects;
+    mapping(uint256 => address[3]) projectMembers;
 
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
     constructor() ERC721("SynthWork", "SNWK") {
         implementation = address(new StorageContract());
+        _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        _setupRole(MINTER_ROLE, msg.sender);
     }
 
     function createProject(
@@ -40,7 +43,9 @@ contract FactoryContract is ERC721, ERC721URIStorage, AccessControl, Ownable {
             ipfsHash
         );
         projects.push(projectAddress);
+        projectMembers[projectId] = [msg.sender, seniorAddress, clientAddress];
         _projectIdCounter.increment();
+        _grantRole(MINTER_ROLE, projectAddress);
     }
 
     function safeMint(uint256 tokenId, address to, string memory uri) public onlyRole(MINTER_ROLE) {
@@ -68,5 +73,31 @@ contract FactoryContract is ERC721, ERC721URIStorage, AccessControl, Ownable {
         returns (bool)
     {
         return super.supportsInterface(interfaceId);
+    }
+
+    function getProjectsOfUser(address user)
+        public
+        view
+        returns (address[] memory)
+    {
+        uint256 i = 0;
+        for (uint256 j = 0; j < projects.length; j++) {
+            if (projectMembers[j][0] == user
+                || projectMembers[j][1] == user
+                || projectMembers[j][2] == user) {
+                i++;
+            }
+        }
+        address[] memory userProjects = new address[](i);
+        uint256 k = 0;
+        for (uint256 j = 0; j < projects.length; j++) {
+            if (projectMembers[j][0] == user
+                || projectMembers[j][1] == user
+                || projectMembers[j][2] == user) {
+                userProjects[k] = projects[j];
+                k++;
+            }
+        }
+        return userProjects;
     }
 }
