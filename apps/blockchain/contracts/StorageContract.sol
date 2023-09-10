@@ -36,7 +36,17 @@ contract StorageContract is Initializable, Ownable {
     mapping(address => bool) hasApproved;
 
     constructor() {
-      _disableInitializers();
+        _disableInitializers();
+    }
+
+    modifier validForApprovalOrRejection(uint256 _projectId) {
+        require(_projectId == project.projectId, "Invalid project id");
+        require(status == ProjectStatus.Pending, "Project is not pending");
+        require(msg.sender == project.clientAddress 
+                || msg.sender == project.seniorAddress, 
+                "Unauthorized");
+        require(!hasApproved[msg.sender], "Already approved");
+        _;
     }
 
     function initialize(
@@ -55,10 +65,10 @@ contract StorageContract is Initializable, Ownable {
         factoryAddress = _factoryAddress;
     }
 
-    function approveRequest(uint256 _projectId, bytes calldata signature) external {
-        require(msg.sender == project.clientAddress 
-                || msg.sender == project.seniorAddress, 
-                "Unauthorized");
+    function approveRequest(uint256 _projectId, bytes calldata signature) 
+        external 
+        validForApprovalOrRejection(_projectId) 
+    {
         hasApproved[msg.sender] = true;
         if (hasApproved[project.clientAddress] && hasApproved[project.seniorAddress]) {
             status = ProjectStatus.Approved;
@@ -66,10 +76,10 @@ contract StorageContract is Initializable, Ownable {
         }
     }
 
-    function rejectRequest(uint256 _projectId, bytes calldata signature) external {
-        require(msg.sender == project.clientAddress 
-                || msg.sender == project.seniorAddress, 
-                "Unauthorized");
+    function rejectRequest(uint256 _projectId, bytes calldata signature) 
+        external 
+        validForApprovalOrRejection(_projectId)
+    {
         status = ProjectStatus.Rejected;
     }
 

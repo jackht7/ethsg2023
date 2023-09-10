@@ -31,6 +31,10 @@ contract FactoryContract is ERC721, ERC721URIStorage, AccessControl, Ownable {
         address clientAddress,
         string calldata ipfsHash
     )   external {
+        require (seniorAddress != address(0), "Invalid address");
+        require (clientAddress != address(0), "Invalid address");
+        require (seniorAddress != clientAddress, "Invalid address");
+
         uint256 projectId = _projectIdCounter.current();
         address projectAddress = Clones.clone(implementation);
         StorageContract(projectAddress).initialize(
