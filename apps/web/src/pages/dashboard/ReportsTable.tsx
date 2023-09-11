@@ -181,12 +181,9 @@ export default function ReportTable(props) {
   const [orderBy] = useState('trackingNo');
   const [selected] = useState([]);
   const [reports, setReports] = useState([]);
-  const [mintingRequests, setMintingRequests] = useState([]);
+  const [storageContract, setStorageContract] = useState(null);
 
   const { wallet, mints, sdkConnected } = useMetaMask();
-  const [ticketCollection, setTicketCollection] = useState<TicketFormatted[]>(
-    [],
-  );
 
   // fetch minting requests
   useEffect(() => {
@@ -219,6 +216,7 @@ export default function ReportTable(props) {
         const storageContractAddress =
           storageContractArray[storageContractArray.length - 1];
         const storageContract = childFactory.attach(storageContractAddress);
+        setStorageContract(storageContract);
         const requests = await storageContract.getRequests(wallet.address);
         return requests[0];
       };
@@ -268,19 +266,7 @@ export default function ReportTable(props) {
       wallet.address !== null &&
       window.ethereum
     ) {
-      const provider = new ethers.providers.Web3Provider(
-        window.ethereum as unknown as ethers.providers.ExternalProvider,
-      );
-      const signer = provider.getSigner();
-      const factory = new ReportTickets__factory(signer);
-
-      if (!isSupportedNetwork(wallet.chainId)) {
-        return;
-      }
-
-      const nftTickets = factory.attach(config[wallet.chainId].contractAddress);
-      nftTickets.approveMinting(tokenId);
-      // nftTickets.approveRequest(txNumber, signature);
+      storageContract.approveRequest(tokenId);
     }
   };
 
@@ -290,19 +276,7 @@ export default function ReportTable(props) {
       wallet.address !== null &&
       window.ethereum
     ) {
-      const provider = new ethers.providers.Web3Provider(
-        window.ethereum as unknown as ethers.providers.ExternalProvider,
-      );
-      const signer = provider.getSigner();
-      const factory = new ReportTickets__factory(signer);
-
-      if (!isSupportedNetwork(wallet.chainId)) {
-        return;
-      }
-
-      const nftTickets = factory.attach(config[wallet.chainId].contractAddress);
-      nftTickets.approveMinting(tokenId);
-      // nftTickets.rejectRequest(txNumber, signature);
+      storageContract.rejectRequest(tokenId);
     }
   };
 
@@ -355,13 +329,21 @@ export default function ReportTable(props) {
                       {row.trackingNo}
                     </Link>
                   </TableCell>
-                  <TableCell align="left">{row.name}</TableCell>
+                  <TableCell align="left">
+                    <Link
+                      color="secondary"
+                      component={RouterLink}
+                      to={`https://ipfs.io/ipfs/${row.name}`}
+                    >
+                      {formatIpfsHash(row.name)}
+                    </Link>
+                  </TableCell>
                   <TableCell align="left">
                     <OrderStatus
                       status={row.status}
                       tokenId={row.trackingNo}
-                      handleApprove={() => {}}
-                      handleReject={() => {}}
+                      handleApprove={handleApprove}
+                      handleReject={handleReject}
                     />
                   </TableCell>
                   <TableCell align="right">{row.amount}</TableCell>

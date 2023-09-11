@@ -226,7 +226,7 @@ const DashboardDefault = () => {
       </Grid>
 
       {/* row 2 */}
-      {draftReports && draftReports.length > 0 && (
+      {/* {draftReports && draftReports.length > 0 && (
         <Grid item xs={12} md={10} lg={10}>
           <Grid container alignItems="center" justifyContent="space-between">
             <Grid item>
@@ -238,7 +238,7 @@ const DashboardDefault = () => {
             <DraftReports collection={draftReports}></DraftReports>
           </MainCard>
         </Grid>
-      )}
+      )} */}
 
       {/* row 3 */}
       <Grid item xs={12} md={10} lg={10}>

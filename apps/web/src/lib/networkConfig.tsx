@@ -19,7 +19,7 @@ export const config = {
   '0xe9ac0dc': {
     name: 'Neon',
     contractAddress:
-      contractAddress || '0x7F4CF73B444d0780586539A406D873Cd5C53fAd4',
+      contractAddress || '0xfD69f04D100841dF40BC31989a216E4731645f92',
     symbol: 'NEON',
     blockExplorer: 'https://devnet.neonscan.org',
   },
