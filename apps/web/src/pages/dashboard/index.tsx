@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef } from 'react';
-import { ethers } from 'ethers';
 import {
   Grid,
   Typography,
@@ -13,10 +12,6 @@ import { styled } from '@mui/system';
 import OpenAI from 'openai';
 
 import ReportsTable from './ReportsTable';
-import DraftReports from './DraftReports';
-import { ReportTickets__factory } from '~/../../blockchain';
-import { config, isSupportedNetwork } from '~/lib/networkConfig';
-import { useMetaMask } from '~/hooks/useMetaMask';
 import MainCard from '~/components/MainCard';
 import SelectableImageList from '~/components/SelectableImageList';
 import { pollMessages, getFile } from '~/telegram';
@@ -39,6 +34,8 @@ const openai = OPEN_AI_API_KEY
       dangerouslyAllowBrowser: true,
     })
   : undefined;
+
+const thirdWebClientId = import.meta.env.VITE_PUBLIC_THIRDWEB_CLIENT_ID;
 
 const DashboardDefault = () => {
   // TODO: use updateId to keep track latest message
@@ -229,7 +226,7 @@ const DashboardDefault = () => {
       </Grid>
 
       {/* row 2 */}
-      {draftReports && draftReports.length > 0 && (
+      {/* {draftReports && draftReports.length > 0 && (
         <Grid item xs={12} md={10} lg={10}>
           <Grid container alignItems="center" justifyContent="space-between">
             <Grid item>
@@ -241,7 +238,7 @@ const DashboardDefault = () => {
             <DraftReports collection={draftReports}></DraftReports>
           </MainCard>
         </Grid>
-      )}
+      )} */}
 
       {/* row 3 */}
       <Grid item xs={12} md={10} lg={10}>

@@ -20,7 +20,7 @@ const LogoSection = ({ sx, to }) => {
       sx={sx}
     >
       <Logo />
-      <h3>RawlBolt</h3>
+      <h3>Synthwork</h3>
     </ButtonBase>
   );
 };

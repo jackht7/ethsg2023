@@ -4,8 +4,9 @@ pragma solidity ^0.8.17;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
+import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 
-contract StorageContract is Initializable, Ownable {
+contract StorageContract is Initializable, Ownable, ERC721Holder {
 
     struct Project {
         uint256 projectId;
@@ -65,7 +66,7 @@ contract StorageContract is Initializable, Ownable {
         factoryAddress = _factoryAddress;
     }
 
-    function approveRequest(uint256 _projectId, bytes calldata signature) 
+    function approveRequest(uint256 _projectId) 
         external 
         validForApprovalOrRejection(_projectId) 
     {
@@ -76,10 +77,11 @@ contract StorageContract is Initializable, Ownable {
         }
     }
 
-    function rejectRequest(uint256 _projectId, bytes calldata signature) 
+    function rejectRequest(uint256 _projectId) 
         external 
         validForApprovalOrRejection(_projectId)
     {
+
         status = ProjectStatus.Rejected;
     }
 
@@ -89,9 +91,9 @@ contract StorageContract is Initializable, Ownable {
         require(success, "minting failed");
     }
 
-    function getRequests(address user) external view returns (Request[] memory) {
+    function getRequests(address _user) external view returns (Request[] memory) {
         Request[] memory requests = new Request[](1);
-        requests[0] = Request(project.projectId, hasApproved[user], status, project.amount, project.ipfsHash);
+        requests[0] = Request(project.projectId, hasApproved[_user], status, project.amount, project.ipfsHash);
         return requests;  
     }
 }

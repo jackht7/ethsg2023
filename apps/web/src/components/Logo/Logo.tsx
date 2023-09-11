@@ -13,7 +13,7 @@ const Logo = () => {
         maxHeight: { xs: 233, md: 167 },
         maxWidth: { xs: 350, md: 250 },
       }}
-      alt="RawlBolt"
+      alt="Synthwork"
       src={logo}
     />
   );

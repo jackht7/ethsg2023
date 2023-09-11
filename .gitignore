@@ -33,6 +33,6 @@ yarn-error.log*
 .turbo
 .env
 
-/apps/web/src/lib/contract-abis/*
-/apps/blockchain/contract-abis/*
+# /apps/web/src/lib/contract-abis/*
+# /apps/blockchain/contract-abis/*
 /tools

@@ -19,7 +19,9 @@ import { ethers } from 'ethers';
 import Dot from '~/components/@extended/Dot';
 import { TicketFormatted } from '../dashboard';
 import { useMetaMask } from '~/hooks/useMetaMask';
-import { ReportTickets__factory } from '~/../../blockchain';
+import { formatIpfsHash } from '~/utils';
+import { FactoryContract__factory } from '~/../../blockchain/typechain';
+import { StorageContract__factory } from '~/../../blockchain/typechain';
 import { config, isSupportedNetwork } from '~/lib/networkConfig';
 
 const createData = (trackingNo, name, status, amount) => {
@@ -179,121 +181,82 @@ export default function ReportTable(props) {
   const [orderBy] = useState('trackingNo');
   const [selected] = useState([]);
   const [reports, setReports] = useState([]);
-  const [mintingRequests, setMintingRequests] = useState([]);
+  const [storageContract, setStorageContract] = useState(null);
 
   const { wallet, mints, sdkConnected } = useMetaMask();
-  const [ticketCollection, setTicketCollection] = useState<TicketFormatted[]>(
-    [],
-  );
-
-  // fetch minted NFTs
-  useEffect(() => {
-    if (
-      typeof window !== 'undefined' &&
-      wallet.address !== null &&
-      window.ethereum
-    ) {
-      const provider = new ethers.providers.Web3Provider(
-        window.ethereum as unknown as ethers.providers.ExternalProvider,
-      );
-      const signer = provider.getSigner();
-      const factory = new ReportTickets__factory(signer);
-
-      if (!isSupportedNetwork(wallet.chainId)) {
-        return;
-      }
-
-      const nftTickets = factory.attach(config[wallet.chainId].contractAddress);
-      const ticketsRetrieved = [];
-
-      nftTickets.walletOfOwner(wallet.address).then((ownedTickets) => {
-        const promises = ownedTickets.map(async (token) => {
-          const currentTokenId = token.toString();
-          const currentTicket = await nftTickets.tokenURI(currentTokenId);
-
-          const base64ToString = window.atob(
-            currentTicket.replace('data:application/json;base64,', ''),
-          );
-          // const nftData = JSON.parse(base64ToString);
-
-          ticketsRetrieved.push({
-            tokenId: currentTokenId,
-          });
-        });
-        Promise.all(promises).then(() => setTicketCollection(ticketsRetrieved));
-      });
-    }
-  }, [wallet.address, mints, wallet.chainId, sdkConnected]);
 
   // fetch minting requests
   useEffect(() => {
     if (
       typeof window !== 'undefined' &&
       wallet.address !== null &&
+      wallet.address.length > 0 &&
       window.ethereum
     ) {
       const provider = new ethers.providers.Web3Provider(
         window.ethereum as unknown as ethers.providers.ExternalProvider,
       );
       const signer = provider.getSigner();
-      const factory = new ReportTickets__factory(signer);
+      const parentFactory = new FactoryContract__factory(signer);
+      const childFactory = new StorageContract__factory(signer);
 
-      if (!isSupportedNetwork(wallet.chainId)) {
-        return;
+      const networkId = import.meta.env.VITE_PUBLIC_NETWORK_ID;
+      if (!isSupportedNetwork(networkId)) {
+        throw new Error('Non supported network');
       }
 
-      const nftTickets = factory.attach(config[wallet.chainId].contractAddress);
-
       const getMintingRequests = async () => {
-        const totalSupplyInHex = await nftTickets.totalSupply();
-        const totalSupply = parseInt(totalSupplyInHex._hex, 16);
-        const mintingRequests = [];
-
-        for (let tokenId = 1; tokenId <= totalSupply; tokenId++) {
-          const request = await nftTickets.mintingRequests(tokenId);
-          mintingRequests.push({ tokenId, ...request });
-        }
-
-        return mintingRequests;
+        //TODO: fetch all addresses
+        const factoryContract = parentFactory.attach(
+          config[networkId].contractAddress,
+        );
+        const storageContractArray = await factoryContract.getProjectsOfUser(
+          wallet.address,
+        );
+        const storageContractAddress =
+          storageContractArray[storageContractArray.length - 1];
+        const storageContract = childFactory.attach(storageContractAddress);
+        setStorageContract(storageContract);
+        const requests = await storageContract.getRequests(wallet.address);
+        return requests[0];
       };
 
-      getMintingRequests().then((res) => setMintingRequests(res));
+      // const promises = [];
+      getMintingRequests().then((res) => {
+        const { txId, approved, status, amount, ipfsHash } = res;
+        const list = [];
+        list.push(
+          createData(
+            parseInt(txId._hex, 10),
+            ipfsHash,
+            status,
+            parseInt(amount._hex, 10),
+          ),
+        ),
+          setReports(list);
+      });
 
       const intervalId = setInterval(() => {
-        getMintingRequests().then((res) => setMintingRequests(res));
+        getMintingRequests().then((res) => {
+          const { txId, approved, status, amount, ipfsHash } = res;
+          const list = [];
+          list.push(
+            createData(
+              parseInt(txId._hex, 10),
+              ipfsHash,
+              status,
+              parseInt(amount._hex, 10),
+            ),
+          ),
+            setReports(list);
+        });
       }, 5000);
 
       return () => {
         clearInterval(intervalId);
       };
     }
-  }, []);
-
-  useEffect(() => {
-    const arr = Array.from(ticketCollection);
-    const list = [];
-    let status = 0;
-    arr.forEach((nft: { tokenId: string }) => {
-      const request = mintingRequests.find(
-        (item) => item.tokenId == nft.tokenId,
-      );
-
-      if (request) {
-        status = request.approved ? 1 : request.status == 'rejected' ? 2 : 1;
-      }
-
-      list.push(
-        createData(
-          Number(nft.tokenId),
-          `Site-A Column-${getRandomInt(1, 50)}`,
-          status,
-          `${getRandomInt(1, 10000)}`,
-        ),
-      );
-    });
-
-    setReports(list);
-  }, [mintingRequests, ticketCollection]);
+  }, [wallet, wallet.address, mints, wallet.chainId, sdkConnected]);
 
   const isSelected = (trackingNo) => selected.indexOf(trackingNo) !== -1;
 
@@ -303,18 +266,7 @@ export default function ReportTable(props) {
       wallet.address !== null &&
       window.ethereum
     ) {
-      const provider = new ethers.providers.Web3Provider(
-        window.ethereum as unknown as ethers.providers.ExternalProvider,
-      );
-      const signer = provider.getSigner();
-      const factory = new ReportTickets__factory(signer);
-
-      if (!isSupportedNetwork(wallet.chainId)) {
-        return;
-      }
-
-      const nftTickets = factory.attach(config[wallet.chainId].contractAddress);
-      nftTickets.approveMinting(tokenId);
+      storageContract.approveRequest(tokenId);
     }
   };
 
@@ -324,18 +276,7 @@ export default function ReportTable(props) {
       wallet.address !== null &&
       window.ethereum
     ) {
-      const provider = new ethers.providers.Web3Provider(
-        window.ethereum as unknown as ethers.providers.ExternalProvider,
-      );
-      const signer = provider.getSigner();
-      const factory = new ReportTickets__factory(signer);
-
-      if (!isSupportedNetwork(wallet.chainId)) {
-        return;
-      }
-
-      const nftTickets = factory.attach(config[wallet.chainId].contractAddress);
-      nftTickets.approveMinting(tokenId);
+      storageContract.rejectRequest(tokenId);
     }
   };
 
@@ -375,7 +316,7 @@ export default function ReportTable(props) {
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   aria-checked={isItemSelected}
                   tabIndex={-1}
-                  key={row.trackingNo}
+                  key={row.name}
                   selected={isItemSelected}
                 >
                   <TableCell
@@ -388,7 +329,15 @@ export default function ReportTable(props) {
                       {row.trackingNo}
                     </Link>
                   </TableCell>
-                  <TableCell align="left">{row.name}</TableCell>
+                  <TableCell align="left">
+                    <Link
+                      color="secondary"
+                      component={RouterLink}
+                      to={`https://ipfs.io/ipfs/${row.name}`}
+                    >
+                      {formatIpfsHash(row.name)}
+                    </Link>
+                  </TableCell>
                   <TableCell align="left">
                     <OrderStatus
                       status={row.status}

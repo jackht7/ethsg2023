@@ -14,7 +14,7 @@ const Reports = () => {
         <Grid item />
       </Grid>
       <MainCard sx={{ mt: 2 }} content={false}>
-        <ReportsTable collection={null} />
+        <ReportsTable />
       </MainCard>
     </Grid>
   );

@@ -41,7 +41,7 @@ const disconnectedState: WalletState = {
   address: '',
 };
 const MetaMaskContext = createContext<MetaMaskContextData>(
-  {} as MetaMaskContextData
+  {} as MetaMaskContextData,
 );
 let _initialized = false;
 
@@ -90,11 +90,11 @@ export const MetaMaskContextProvider = ({ children }: PropsWithChildren) => {
 
   const updateWalletAndAccounts = useCallback(
     () => _updateWallet(),
-    [_updateWallet]
+    [_updateWallet],
   );
   const updateWallet = useCallback(
     (accounts: any) => _updateWallet(accounts),
-    [_updateWallet]
+    [_updateWallet],
   );
   const disconnectWallet = useCallback(() => setWallet(disconnectedState), []);
 
@@ -139,7 +139,7 @@ export const MetaMaskContextProvider = ({ children }: PropsWithChildren) => {
         enable: true,
       },
       dappMetadata: {
-        name: 'RawlBolt',
+        name: 'Synthwork',
         url: window.location.host,
       },
       logging: {
@@ -211,7 +211,7 @@ export const useMetaMask = () => {
   const context = useContext(MetaMaskContext);
   if (context === undefined) {
     throw new Error(
-      'useMetaMask must be used within a "MetaMaskContextProvider"'
+      'useMetaMask must be used within a "MetaMaskContextProvider"',
     );
   }
   return context;
