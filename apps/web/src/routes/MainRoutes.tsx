@@ -15,7 +15,7 @@ const MainRoutes = {
       element: <DashboardDefault />,
     },
     {
-      path: 'dashboard',
+      path: 'client',
       element: <ReportsDefault />,
     },
   ],

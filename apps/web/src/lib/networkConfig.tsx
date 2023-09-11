@@ -11,10 +11,17 @@ export const config = {
   '0xe704': {
     name: 'Linea',
     contractAddress:
-      contractAddress || '0x80746022E6f001363C0Ce37BDE39560ab55a0385',
+      contractAddress || '0x7D84e58a3212F05115c95B3506e673dFf9bc5812',
     symbol: 'ETH',
     blockExplorer: 'https://explorer.goerli.linea.build',
     rpcUrl: 'https://rpc.goerli.linea.build',
+  },
+  '0xe9ac0dc': {
+    name: 'Neon',
+    contractAddress:
+      contractAddress || '0x7F4CF73B444d0780586539A406D873Cd5C53fAd4',
+    symbol: 'NEON',
+    blockExplorer: 'https://devnet.neonscan.org',
   },
   // '0x5': {
   //   name: 'Goerli',

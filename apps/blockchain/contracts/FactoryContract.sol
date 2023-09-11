@@ -79,25 +79,25 @@ contract FactoryContract is ERC721, ERC721URIStorage, AccessControl, Ownable {
         return super.supportsInterface(interfaceId);
     }
 
-    function getProjectsOfUser(address user)
+    function getProjectsOfUser(address _user)
         public
         view
         returns (address[] memory)
     {
         uint256 i = 0;
         for (uint256 j = 0; j < projects.length; j++) {
-            if (projectMembers[j][0] == user
-                || projectMembers[j][1] == user
-                || projectMembers[j][2] == user) {
+            if (projectMembers[j][0] == _user
+                || projectMembers[j][1] == _user
+                || projectMembers[j][2] == _user) {
                 i++;
             }
         }
         address[] memory userProjects = new address[](i);
         uint256 k = 0;
         for (uint256 j = 0; j < projects.length; j++) {
-            if (projectMembers[j][0] == user
-                || projectMembers[j][1] == user
-                || projectMembers[j][2] == user) {
+            if (projectMembers[j][0] == _user
+                || projectMembers[j][1] == _user
+                || projectMembers[j][2] == _user) {
                 userProjects[k] = projects[j];
                 k++;
             }

@@ -80,6 +80,7 @@ contract StorageContract is Initializable, Ownable {
         external 
         validForApprovalOrRejection(_projectId)
     {
+
         status = ProjectStatus.Rejected;
     }
 

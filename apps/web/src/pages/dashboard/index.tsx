@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef } from 'react';
-import { ethers } from 'ethers';
 import {
   Grid,
   Typography,
@@ -13,10 +12,6 @@ import { styled } from '@mui/system';
 import OpenAI from 'openai';
 
 import ReportsTable from './ReportsTable';
-import DraftReports from './DraftReports';
-import { ReportTickets__factory } from '~/../../blockchain';
-import { config, isSupportedNetwork } from '~/lib/networkConfig';
-import { useMetaMask } from '~/hooks/useMetaMask';
 import MainCard from '~/components/MainCard';
 import SelectableImageList from '~/components/SelectableImageList';
 import { pollMessages, getFile } from '~/telegram';
@@ -39,6 +34,8 @@ const openai = OPEN_AI_API_KEY
       dangerouslyAllowBrowser: true,
     })
   : undefined;
+
+const thirdWebClientId = import.meta.env.VITE_PUBLIC_THIRDWEB_CLIENT_ID;
 
 const DashboardDefault = () => {
   // TODO: use updateId to keep track latest message
