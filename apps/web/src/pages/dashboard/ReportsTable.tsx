@@ -17,7 +17,6 @@ import {
 import { ethers } from 'ethers';
 
 import Dot from '~/components/@extended/Dot';
-import { TicketFormatted } from '../dashboard';
 import { useMetaMask } from '~/hooks/useMetaMask';
 import { formatIpfsHash } from '~/utils';
 import { FactoryContract__factory } from '~/../../blockchain/typechain';
