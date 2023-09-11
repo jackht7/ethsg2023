@@ -221,16 +221,15 @@ export default function ReportTable(props) {
         return requests[0];
       };
 
-      // const promises = [];
       getMintingRequests().then((res) => {
         const { txId, approved, status, amount, ipfsHash } = res;
         const list = [];
         list.push(
           createData(
-            parseInt(txId._hex, 10),
+            parseInt(txId._hex, 16),
             ipfsHash,
             status,
-            parseInt(amount._hex, 10),
+            parseInt(amount._hex, 16),
           ),
         ),
           setReports(list);
@@ -242,10 +241,10 @@ export default function ReportTable(props) {
           const list = [];
           list.push(
             createData(
-              parseInt(txId._hex, 10),
+              parseInt(txId._hex, 16),
               ipfsHash,
               status,
-              parseInt(amount._hex, 10),
+              parseInt(amount._hex, 16),
             ),
           ),
             setReports(list);
@@ -333,7 +332,7 @@ export default function ReportTable(props) {
                     <Link
                       color="secondary"
                       component={RouterLink}
-                      to={`https://ipfs.io/ipfs/${row.name}`}
+                      to={`https://gateway.ipfs.io/ipfs/${row.name}`}
                     >
                       {formatIpfsHash(row.name)}
                     </Link>

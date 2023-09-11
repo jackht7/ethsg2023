@@ -1036,7 +1036,11 @@
   },
   "networks": {},
   "schemaVersion": "3.4.16",
+<<<<<<< Updated upstream
   "updatedAt": "2023-09-11T08:32:13.499Z",
+=======
+  "updatedAt": "2023-09-11T11:48:11.067Z",
+>>>>>>> Stashed changes
   "devdoc": {
     "details": "External interface of AccessControl declared to support ERC165 detection.",
     "events": {

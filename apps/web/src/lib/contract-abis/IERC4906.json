@@ -577,7 +577,11 @@
   },
   "networks": {},
   "schemaVersion": "3.4.16",
+<<<<<<< Updated upstream
   "updatedAt": "2023-09-11T08:32:13.504Z",
+=======
+  "updatedAt": "2023-09-11T11:48:11.072Z",
+>>>>>>> Stashed changes
   "devdoc": {
     "events": {
       "BatchMetadataUpdate(uint256,uint256)": {

@@ -1654,7 +1654,11 @@
   },
   "networks": {},
   "schemaVersion": "3.4.16",
+<<<<<<< Updated upstream
   "updatedAt": "2023-09-11T08:32:13.535Z",
+=======
+  "updatedAt": "2023-09-11T11:48:11.097Z",
+>>>>>>> Stashed changes
   "devdoc": {
     "details": "Required interface of an ERC721 compliant contract.",
     "events": {

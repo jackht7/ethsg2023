@@ -11,7 +11,7 @@ export const config = {
   '0xe704': {
     name: 'Linea',
     contractAddress:
-      contractAddress || '0x7D84e58a3212F05115c95B3506e673dFf9bc5812',
+      contractAddress || '0xb0ed5C158B7966462088b8312459299517fe9eFB',
     symbol: 'ETH',
     blockExplorer: 'https://explorer.goerli.linea.build',
     rpcUrl: 'https://rpc.goerli.linea.build',

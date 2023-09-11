@@ -5211,7 +5211,11 @@
   },
   "networks": {},
   "schemaVersion": "3.4.16",
+<<<<<<< Updated upstream
   "updatedAt": "2023-09-11T08:32:13.562Z",
+=======
+  "updatedAt": "2023-09-11T11:48:11.122Z",
+>>>>>>> Stashed changes
   "devdoc": {
     "details": "Elliptic Curve Digital Signature Algorithm (ECDSA) operations. These functions can be used to verify that a message was signed by the holder of the private keys of a given address.",
     "kind": "dev",

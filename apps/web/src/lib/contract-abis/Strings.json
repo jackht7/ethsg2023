@@ -3169,7 +3169,11 @@
   },
   "networks": {},
   "schemaVersion": "3.4.16",
+<<<<<<< Updated upstream
   "updatedAt": "2023-09-11T08:32:13.556Z",
+=======
+  "updatedAt": "2023-09-11T11:48:11.117Z",
+>>>>>>> Stashed changes
   "devdoc": {
     "details": "String operations.",
     "kind": "dev",

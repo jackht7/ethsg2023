@@ -2341,7 +2341,11 @@
   },
   "networks": {},
   "schemaVersion": "3.4.16",
+<<<<<<< Updated upstream
   "updatedAt": "2023-09-11T08:32:13.539Z",
+=======
+  "updatedAt": "2023-09-11T11:48:11.102Z",
+>>>>>>> Stashed changes
   "devdoc": {
     "details": "ERC721 token with storage based token URI management.",
     "kind": "dev",

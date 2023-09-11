@@ -13,10 +13,10 @@ import { config, isSupportedNetwork } from '~/lib/networkConfig';
 import { useMetaMask } from '~/hooks/useMetaMask';
 
 const initialValues = {
-  projectName: '',
+  projectName: 'project',
   currentDate: '',
-  location: '',
-  contractor: '',
+  location: 'location',
+  contractor: 'team',
   imageUrl: '',
   description: '',
   reviewerAddress1: '',
