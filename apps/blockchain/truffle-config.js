@@ -114,6 +114,15 @@ module.exports = {
       },
       network_id: '*',
     },
+    mantle: {
+      provider: function () {
+        return new HDWalletProvider({
+          privateKeys: [process.env.PRIVATE_KEY],
+          provider: 'https://rpc.testnet.mantle.xyz/',
+        });
+      },
+      network_id: 5001,
+    },
     development: {
       host: '127.0.0.1', // Localhost (default: none)
       port: 9545, // Standard Ethereum port (default: none)

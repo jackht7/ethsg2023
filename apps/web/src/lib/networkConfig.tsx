@@ -23,6 +23,13 @@ export const config = {
     symbol: 'NEON',
     blockExplorer: 'https://devnet.neonscan.org',
   },
+  '0x1389': {
+    name: 'Mantle',
+    contractAddress:
+      contractAddress || '0x4B52749b6c3CDF470F905fDed5971aBbdaA32537',
+    symbol: 'MNT',
+    blockExplorer: 'https://explorer.testnet.mantle.xyz/',
+  },
   // '0x5': {
   //   name: 'Goerli',
   //   contractAddress: '',

@@ -12,7 +12,8 @@
     "deploy:goerli": "truffle migrate --network goerli",
     "deploy:mumbai": "truffle migrate --network mumbai",
     "deploy:linea": "truffle migrate --network linea",
-    "deploy:neon": "truffle migrate --network neon"
+    "deploy:neon": "truffle migrate --network neon",
+    "deploy:mantle": "truffle migrate --network mantle"
   },
   "author": "UltimateRoman",
   "license": "MIT",
